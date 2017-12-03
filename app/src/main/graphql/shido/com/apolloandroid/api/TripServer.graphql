@@ -1,14 +1,14 @@
 query getAllTrips {
 allTrips {
-...tripFields
+...planFields
 }
 }
 query findTrips($search: String!) {
 findTrips(searchFor: $search) {
-...tripFields
+...planFields
 }
 }
-fragment tripFields on Trip {
+fragment planFields on Plan {
 id
 title
 startTime
@@ -20,5 +20,55 @@ creationTime
 mutation createTrip($trip: TripInput!) {
 createTrip(trip: $trip) {
 id
+}
+}
+
+
+query fragmentTrips {
+  result: allTrips {
+    ...planFields
+    plans {
+     ...planFields
+      ...on Flight{
+        airlineCode
+        flightNumber
+        departingAirport
+      }
+      ...on  Lodging{
+        address
+      }
+  }
+}
+}
+
+query noteTrips {
+  allTrips {
+    ...tripFields
+  }
+  }
+
+
+fragment tripFields on Trip {
+...planFields
+plans {
+...planFields
+... on Flight {
+airlineCode
+flightNumber
+departingAirport
+arrivingAirport
+}
+... on Lodging {
+address
+}
+}
+notes {
+... on Comment {
+text
+}
+... on Link {
+url
+title
+}
 }
 }

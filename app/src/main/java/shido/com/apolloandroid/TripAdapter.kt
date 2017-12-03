@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.trip_row.view.*
-import shido.com.apolloandroid.api.GetAllTrips
+import shido.com.apolloandroid.api.fragment.TripFields
 
 /**
  * Created by mira on 28/11/2017.
  */
-class TripAdapter(val allTrips: MutableList<GetAllTrips.AllTrip>, val context :Context) : RecyclerView.Adapter<TripAdapter.ViewHolder>() {
+class TripAdapter(val context :Context) : RecyclerView.Adapter<TripAdapter.ViewHolder>() {
+
+    var allTrips: List<TripFields> = listOf()
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         holder?.bindTrip(allTrips[position])
@@ -29,11 +31,13 @@ class TripAdapter(val allTrips: MutableList<GetAllTrips.AllTrip>, val context :C
 
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        fun bindTrip(trip: GetAllTrips.AllTrip){
-            itemView.idTrip.text = trip.id()
+        fun bindTrip(trip: TripFields){
+            itemView.idTrip.text = "ID : " + trip.id()
             itemView.title.text = trip.title()
-            itemView.duration.text = trip.duration().toString()
-            itemView.startTime.text = trip.startTime()
+            itemView.duration.text = "Duration :" + trip.duration().toString()
+            itemView.startTime.text = "Start Time : "  + trip.startTime()
+            itemView.priority.text = "Priority: " + trip.priority().name
+            itemView.creationTime.text = "Creation time: " + trip.creationTime()
         }
     }
 }

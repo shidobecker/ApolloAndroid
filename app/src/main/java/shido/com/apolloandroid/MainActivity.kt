@@ -16,9 +16,14 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import shido.com.apolloandroid.R.id.end
+import shido.com.apolloandroid.api.CreateTrip
 import shido.com.apolloandroid.api.FindTrips
 import shido.com.apolloandroid.api.GetAllTrips
 import shido.com.apolloandroid.api.fragment.TripFields
+import shido.com.apolloandroid.api.type.Priority
+import shido.com.apolloandroid.api.type.TripInput
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +49,10 @@ class MainActivity : AppCompatActivity() {
             tripAdapter.allTrips = response
             tripAdapter.notifyDataSetChanged()
         }, { onError -> Log.e("Error", "Error") })
+
+        saveBtn.setOnClickListener {
+            saveNewTrip()
+        }
     }
 
 
@@ -149,5 +158,32 @@ class MainActivity : AppCompatActivity() {
 
         return super.onCreateOptionsMenu(menu)
 
+    }
+
+    private val PRIORITIES = arrayOf(Priority.LOW, Priority.MEDIUM, Priority.HIGH, Priority.OMG)
+
+    private fun saveNewTrip(){
+        val duration = (120000 - 60000)
+
+        val tripInput = TripInput.builder()
+                //.priority(PRIORITIES[priority.selectedItemPosition])
+                .priority(Priority.HIGH)
+                .title(titleEdt.text.toString())
+                .duration(duration)
+                .startTime(Date().time.toString()).build()
+
+        val vars = CreateTrip.builder().trip(tripInput).build()
+
+        val apolloClient = GraphqlServiceGenerator.createService()
+        apolloClient.mutate(vars).enqueue(object : ApolloCall.Callback<CreateTrip.Data>(){
+            override fun onFailure(e: ApolloException) {
+                    Log.e("WRONG", "ERROR ${e.message}")
+            }
+
+            override fun onResponse(response: Response<CreateTrip.Data>) {
+                    Log.e("SUCCESS", "DATA ${response.data()?.createTrip()?.id()}")
+            }
+
+        })
     }
 }

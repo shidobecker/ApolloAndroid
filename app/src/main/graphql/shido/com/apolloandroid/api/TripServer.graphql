@@ -16,3 +16,9 @@ priority
 duration
 creationTime
 }
+
+mutation createTrip($trip: TripInput!) {
+createTrip(trip: $trip) {
+id
+}
+}

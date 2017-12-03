@@ -13,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor.Level;
 public class GraphqlServiceGenerator {
 
     public static String BASE_GRAPHQL_URL = "https://graphql-demo.commonsware.com/0.3/graphql";
+    public static String LOCAL_SERVER = "http://192.168.1.2:4000/0.3/graphql";
 
     private static OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
 
@@ -32,7 +33,7 @@ public class GraphqlServiceGenerator {
         okHttpClient.connectTimeout(20, TimeUnit.SECONDS);
         //apolloClient.build().query()
         return apolloClient.okHttpClient(okHttpClient.build())
-            .serverUrl(BASE_GRAPHQL_URL)
+            .serverUrl(LOCAL_SERVER)
             .build();
     }
 
